@@ -30,7 +30,7 @@ function decks (state = {}, action) {
           [action.title]:{
             title:action.title,
             cards:[]
-          }
+          } 
         }
       
     case ADD_CARDTODECK:

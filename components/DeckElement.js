@@ -18,14 +18,15 @@ class DeckElement extends Component {
     render() {
         const {decktitle,NbrofCards, navigation} = this.props
         // we need set activedeck before we naviaget to Deck
+   
         return (
                 <TouchableOpacity style={styles.container} underlayColor='red' onPress = {() => this.gotoDeck()}>
                       <View style={styles.contentContainer}>
                         <Text style={styles.title}>
                               {decktitle} Deck
                         </Text>
-                       { (NbrofCards)  &&    <Text style={styles.countText}>  {NbrofCards>1? ` ${NbrofCards} Cards`:`${NbrofCards}  Card`}  </Text>   }
-                    </View>
+                        <Text style={styles.countText}>  { NbrofCards > 1 ? ` ${NbrofCards} Cards` : `${NbrofCards}  Card`}  </Text>  
+                      </View>
                     
                     <FontAwesome
                       name="chevron-right"

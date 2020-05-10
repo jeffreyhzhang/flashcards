@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Platform, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
+import { Platform,  Text, TextInput, TouchableOpacity, View} from "react-native";
 import {handleaddDeckTitle,  } from '../actions/decks'
 import {styles} from '../utils/AppStyles'
 
@@ -21,10 +21,13 @@ class AddDeck extends Component {
             this.setState({ title:''})
             
             this.props.dispatch(handleaddDeckTitle(title))
+
+            //set this newly created  deck as active deck
+            //this.props.dispatch(handleSetActiveDeck(title))
+            this.props.navigation.navigate('Deck',{decktitle : title})
+
             // Navigate to  AddCard with title as route with params
-            this.props.navigation.navigate('AddCard',  { decktitle : title})
-            // Save to "DB"
-            // Clear local notification
+            //this.props.navigation.navigate('AddCard',  { decktitle : title})
         }
     }
 
@@ -48,7 +51,7 @@ class AddDeck extends Component {
                 onPress={ this.submit}
   
                 >
-                <Text style={styles.submitButtonText}> Submit </Text>
+                <Text style={styles.submitButtonText}> Create Deck </Text>
                 </TouchableOpacity>
             </View>
         )

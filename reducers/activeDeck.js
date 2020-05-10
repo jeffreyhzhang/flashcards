@@ -1,4 +1,4 @@
-import {SET_ACTIVEDECK,CLEAR_DECKQUIZ } from '../actions/activeDeck'
+import {SET_ACTIVEDECK } from '../actions/activeDeck'
  
 export default function activeDeck (state = null, action) {
   //convert action.title to deck in action
@@ -8,13 +8,12 @@ export default function activeDeck (state = null, action) {
                 ...state,
                 ...action.activeDeck
             }
-        case  CLEAR_DECKQUIZ:
-        
-            return  {
-                ...state,
-                [action.deck.title]: action.deck,
-                activeDeck:action.deck
-            }
+        //   case  CLEAR_DECKQUIZ:
+        //     return  {
+        //         ...state,
+        //         [action.deck.title]: action.deck,
+        //         activeDeck:action.deck
+        //     }
         default :
             return state
     }

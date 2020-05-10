@@ -3,9 +3,10 @@ import {GET_DECK, RECEIVE_DECKS,ADD_DECKTITLE,ADD_CARDTODECK,REMOVE_DECK,INIT_DE
 import { combineReducers } from 'redux'
 import decks from './decks'
 import activeDeck from './activeDeck'
- 
+import clearQuiz from './clearQuiz' 
 export default combineReducers({
     decks,
     activeDeck,
+    clearQuiz,
 })
 

@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import { Platform, Text,  TouchableOpacity, View} from "react-native";
 import { connect } from 'react-redux'
-import {handleQuizCard, handlereceiveDecks} from '../actions/decks'
-import {handleClearQuizAnswers} from '../actions/activeDeck'
+import {handleQuizCard, } from '../actions/decks'
+import {handleClearQuizAnswers} from '../actions/clearQuiz'
 import {styles} from '../utils/AppStyles'
 import { FontAwesome } from '@expo/vector-icons';
-import { setLocalNotification, clearLocalNotification } from '../utils/setLocalNotification';
+import { setLocalNotification, clearLocalNotification ,getNotificationPermission} from '../utils/setLocalNotification';
 class Quiz extends Component {
 
     state = {
@@ -25,13 +25,27 @@ class Quiz extends Component {
 
     goHome =(nav) =>{
       //reset notification 
-      clearLocalNotification().then(
+      if(getNotificationPermission()) {
+        alert(">>>")
+        clearLocalNotification().then(
           setLocalNotification()
         )
-
+      }
       nav.navigate('Decks')
     }
     
+    goBack =(nav) =>{
+      //reset notification 
+      if(getNotificationPermission()) {
+        alert(">>>")
+        clearLocalNotification().then(
+            setLocalNotification()
+          )
+      }
+      nav.goBack()
+    }
+    
+
     ClearAnswers = (title,navigation) => {
       //null out all quiz for all cards in this deck 
       this.props.dispatch( handleClearQuizAnswers(title) )
@@ -43,12 +57,11 @@ class Quiz extends Component {
     render() {
        const { route } = this.props;
        const {decks,navigation }  = this.props
- 
        const {decktitle} = route.params;
        let reQuiz = this.state.refreshme?'Re-Quiz':'Quiz'
        let showQorA = this.state.showQuestion ? 'Answer':'Question'
        let deck = decks[decktitle]
-    
+ 
        let totalcards = deck.cards.length
        let cardLefttoQuiz =  deck.cards.filter(item=>item.quiz===null).length
        let correctCt =  deck.cards.filter(item=>item.quiz==='C').length
@@ -61,26 +74,45 @@ class Quiz extends Component {
       const card =  deck.cards.find(item=>item.quiz===null)
   
       if(card === undefined) {
-           //set notification if all 
-           return (
-           <View  style={styles.container}>
-               <Text style={styles.xlargeText}>  {decktitle} Deck {reQuiz}</Text>
-               <View style={styles.separator} />
-               <FontAwesome.Button  name="rocket"  backgroundColor="#ff5998"  onPress = {() => this.ClearAnswers(decktitle,navigation) }> Restart Quiz </FontAwesome.Button>
-               <Text style={styles.xlargeText}> Your score is: {score}%.</Text> 
-               <View style={styles.separator} />
-               <Text style={styles.TextStyle}> You answered {correctCt + wrongCt}  out of {totalcards}  cards.</Text>
-               <View style={styles.separator} />
-               <FontAwesome.Button  name="briefcase" backgroundColor="#3b5998"  onPress = {() => this.goHome(navigation) }> Go Home </FontAwesome.Button>
-           </View>
-           )
+           //if no cards at all vs answered all quiz
+           if(totalcards>0) { 
+            return (
+            <View  style={styles.container}>
+                <Text style={styles.xlargeText}>  {decktitle} Deck {reQuiz}</Text>
+              
+                <View style={styles.separator} />
+                <FontAwesome.Button  name="rocket"  backgroundColor="#ff5998"  onPress = {() => this.ClearAnswers(decktitle,navigation) }> Restart Quiz </FontAwesome.Button>
+                <Text style={styles.xlargeText}> Your finaly score is: {score}%.</Text> 
+                <View style={styles.separator} />
+                <Text style={styles.TextStyle}> You answered {correctCt + wrongCt}  out of {totalcards}  cards.</Text>
+              
+                <View style={styles.separator} />
+          
+                <FontAwesome.Button  name="chevron-left"   style={styles.leftArrow} size={18}  backgroundColor="#3b5998"  onPress = {() => this.goBack(navigation) }> Go Back </FontAwesome.Button>
+                <View style={styles.separator} />
+                <FontAwesome.Button  name="briefcase"  onPress = {() => this.goHome(navigation) }> Go Home </FontAwesome.Button>
+            </View>
+            )
+           }
+           else{
+            return (
+               <View  style={styles.container}>
+                  <Text style={styles.xlargeText}>  {decktitle} Deck {reQuiz}</Text>
+                  <View style={styles.separator} />
+                  <Text style={styles.largeText}>  No Card in {decktitle} deck.</Text>
+                  <View style={styles.separator} />
+                <FontAwesome.Button  name="chevron-left"   style={styles.leftArrow} size={18}  backgroundColor="#3b5998"  onPress = {() => this.goBack(navigation) }> Go Back </FontAwesome.Button>
+                <View style={styles.separator} />
+                <FontAwesome.Button  name="briefcase"  onPress = {() => this.goHome(navigation) }> Go Home </FontAwesome.Button>
+              </View>
+         )}
       }
       else{
           return (
             <View style={styles.container}> 
                 <Text style={styles.xlargeText}> {reQuiz} {decktitle} Deck {this.state.showQuestion ? 'Question:' : 'Answer:'}  </Text>
                 <Text style={styles.largeText}>  {this.state.showQuestion ? card.question : card.answer}  </Text>
-                <Text style={styles.AnswerTextStyle} onPress={ ()=>  this.flipQandA()  }> {showQorA} </Text>
+                <Text style={styles.AnswerTextStyle} onPress={this.flipQandA}> {showQorA} </Text>
                 {!this.state.showQuestion &&
                   <View style={{  flexDirection:"row" }}>
                   <TouchableOpacity
@@ -98,7 +130,7 @@ class Quiz extends Component {
                 </View>
               }
                <View style={{ flex: 1, flexDirection:"column", alignItems: 'center',justifyContent: 'center' }}>
-                {(cardLefttoQuiz < totalcards)  && <Text style={styles.xlargeText}> Your score is: {score}%.</Text>}
+                <Text style={styles.xlargeText}> Questions left: {cardLefttoQuiz}</Text>
                 <Text style={styles.largeText}> You answered {correctCt + wrongCt}  out of {deck.cards.length}  cards.</Text>
               </View>
             </View>

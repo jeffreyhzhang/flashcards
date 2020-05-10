@@ -1,5 +1,5 @@
 import  {getDeck, getDecks, saveDeckTitle, addCardToDeck, removeDeck, initDecks, clearDecks, quizDeckCard} from '../utils/helpers'
-
+import {_setActiveDeck} from './activeDeck'
 export const RECEIVE_DECKS = 'RECEIVE_DECKS'
 export const ADD_DECKTITLE = 'ADD_DECKTITLE'
 export const ADD_CARDTODECK = 'ADD_CARDTODECK'
@@ -89,14 +89,12 @@ return (dispatch, getState) => {
 ////////////////for middleware /////////
 //save to device, then update store
 export function handleaddCardToDeck (title,card) {
-  return (dispatch, getState) => {
+  return (dispatch) => {
    const  cardid = generateUID()
    card = {cardid:cardid,...card}
    return  addCardToDeck(title,card).then(
       (deck)=>{
         dispatch(_addCardToDeck (title,card))
-       //once  add new card, we want trigger refresh
-       //setTimeout( dispatch(_receiveDecks(decks)),300) 
       }
     )
   }
@@ -128,9 +126,11 @@ export function handlereceiveDecks(){
 }
 
 export function handleaddDeckTitle (title) {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     return saveDeckTitle(title).then((deck)=>{
        dispatch(_addDeckTitle(title)) 
+       //set  active deck
+        dispatch(_setActiveDeck ({title:title,cards:deck[title].cards}))  
     })
   }
 }

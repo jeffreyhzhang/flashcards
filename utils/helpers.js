@@ -41,14 +41,15 @@ export async function saveDeckTitle(title){
             return data[title]
         }
         else{
+            const newdeck = {
+              [title]:{ 
+                      title: title,
+                      cards:[]
+                  }
+            }
             const res =  await  AsyncStorage.setItem(STORAGE_KEY,
-                JSON.stringify({
-                    [title]:{ 
-                            title: title,
-                            cards:[]
-                        }
-                }))
-            return  res
+                JSON.stringify( newdeck))
+            return  newdeck
         }
     }catch(error){
             console.log("save deck error",error.message)

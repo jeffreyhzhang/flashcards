@@ -51,7 +51,7 @@ import { FontAwesome, Icon } from '@expo/vector-icons';
                 <View style={styles.container}>
                     <Text style={styles.largeText}> You don not have any deck!</Text>
                     <Separator/>
-                    <FontAwesome.Button  name="lock"  backgroundColor="#3b5998"    onPress = {() => this.goHome(navigation)} > Try Add a New Deck</FontAwesome.Button>
+                    <FontAwesome.Button  name="lock"  backgroundColor="#3b5998"    onPress = {() => this.goHome(navigation)} > Add a New Deck</FontAwesome.Button>
                 </View>
             )
         }

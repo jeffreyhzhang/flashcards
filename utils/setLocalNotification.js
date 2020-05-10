@@ -4,10 +4,34 @@ import { AsyncStorage } from 'react-native';
 //import { AsyncStorage}  from '@react-native-community/async-storage'
 const NOTIFICATION_KEY = '@FlashCards:LocalNotification';
 
- export function clearLocalNotification() {
-  return  AsyncStorage.removeItem(NOTIFICATION_KEY).then(
-    Notifications.cancelAllScheduledNotificationsAsync()
+export function getNotificationPermission(){
+ 
+  Permissions.getAsync(Permissions.NOTIFICATIONS).then(
+    (status) => {
+ 
+      //if got permission
+      if (status !== 'granted') {
+        Permissions.askAsync(Permissions.NOTIFICATIONS)
+        .then((status) => {
+         //if got permission
+ 
+         if (status === 'granted') {
+              return true
+         }
+        })
+      }
+    }
   )
+  return false;
+}
+
+ export function clearLocalNotification() {
+   //do we have permission yet??
+    if(getNotificationPermission()) { 
+    return  AsyncStorage.removeItem(NOTIFICATION_KEY).then(
+      Notifications.cancelAllScheduledNotificationsAsync()
+    ) 
+  }
 }
 
  function createNotification() {
@@ -50,6 +74,7 @@ export  function setLocalNotification() {
                 })
             }catch(err) {
                console.log("error")
+               alert( 'No Notification Permissions!' );
             }
         } 
       }
