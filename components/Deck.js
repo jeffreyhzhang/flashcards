@@ -21,6 +21,9 @@ class Deck extends Component {
         this.props.navigation.navigate('Quiz', {decktitle: title,navigation:this.props.navigation })
     }
 
+    componentDidMount(){
+      //get # of cards in Deck?
+    }
 
     render() {
         // check to see if we have cards for this deck
@@ -30,12 +33,15 @@ class Deck extends Component {
         if( route.params )
             decktitle  = route.params.decktitle;
         let title = (activeDeck && activeDeck.title) || decktitle
-
         //do we have any cards in active deck?
         //no need showing Quiz if no cards
- 
+        let NbrofCards = (activeDeck && activeDeck.cards.length) || 0 
         return (
             <View style={styles.container}>
+                <View >
+                    <Text style={styles.xlargeText}> {title} Deck with { NbrofCards > 1 ? ` ${NbrofCards} Cards` : `${NbrofCards}  Card`}  </Text> 
+                </View>
+
                 <TouchableOpacity
                 style={styles.submitButton}
                 onPress={() => this.addCard( title)}
